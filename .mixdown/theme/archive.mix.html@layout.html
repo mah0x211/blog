@@ -1,0 +1,29 @@
+{{define "content"}}
+<main>
+<div class="basewidth">
+
+<!-- archive:start -->
+<div class="archive">
+<h1><small><time><script>
+document.write(toDateString({{.First.Ctime}} * 1000));
+</script></time> - <time><script>
+document.write(toDateString({{.Last.Ctime}} * 1000));
+</script></time></small><br>Archive{{if gt (indirect .NPage) 1}} / {{.Page}} of {{.NPage}}{{end}}</h1>
+
+<ul>
+{{range .Docs -}}
+<li>
+<h3><a href="{{.Pathname}}">{{.Subject}}</a><br><small><time><script>document.write(toDateString({{.Ctime}} * 1000))</script></time></small></h3>
+<p>{{.Summary}}</p>
+</li>
+{{- end}}
+</ul>
+
+</div>
+<!-- archive:end-->
+
+{{template "@pagenator.html" .}}
+
+</div>
+</main>
+{{end}}

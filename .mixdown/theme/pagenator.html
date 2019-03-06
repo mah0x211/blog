@@ -1,0 +1,7 @@
+{{define "@pagenator.html"}}
+<nav>
+<ul>
+<li class="newer">{{with .Newer}}<a href="{{.Href}}">新しい記事</a>{{else}}<span>新しい記事</span>{{end}}</li><li class="older">{{with .Older}}<a href="{{.Href}}">古い記事</a>{{else}}<span>古い記事</span>{{end}}</li>
+</ul>
+</nav>
+{{end}}

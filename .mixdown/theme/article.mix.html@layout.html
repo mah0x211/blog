@@ -1,0 +1,15 @@
+{{define "content"}}
+<main>
+<div class="basewidth">
+
+<article>
+<h1><small><time><script>document.write(toDateString({{.Ctime}} * 1000));</script></time></small><br />{{.Subject}}</h1>
+
+{{.Content}}
+</article>
+
+{{template "@pagenator.html" .}}
+
+</div>
+</main>
+{{end}}

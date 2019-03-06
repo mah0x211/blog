@@ -1,0 +1,38 @@
+{{ define "content" }}
+<main>
+<div class="basewidth">
+
+
+{{with index .Docs 0}}
+<!-- latest:start -->
+<article class="latest">
+<h1><small>Latest / <time><script>document.write(toDateString({{.Ctime}} * 1000));</script></time></small><br>{{.Subject}}</h1>
+<p>{{.Summary}}<br>
+<a href="{{.Href}}">続きを読む</a></p>
+</article>
+<!-- latest:end -->
+{{end}}
+
+{{with slice .Docs 1 6}}
+<!-- archives:start -->
+<aside class="archive">
+<ul>
+{{range . -}}
+<li><h3><a href="{{.Href}}">{{.Subject}}</a><br><small><time><script>document.write(toDateString({{.Ctime}} * 1000));</script></time></small></h3>
+<p>{{.Summary}}</p>
+</li>
+{{- end}}
+</ul>
+</aside>
+<!-- archives:end-->
+{{end}}
+
+<nav>
+<ul>
+<li><a href="archive/">アーカイブを表示</a></li>
+</ul>
+</nav>
+
+</div>
+</main>
+{{ end }}
