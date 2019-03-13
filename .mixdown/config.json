@@ -1,4 +1,4 @@
 {
-    "outputdir": "docs",
+    "baseURL": "/blog",
     "extname": "html"
 }

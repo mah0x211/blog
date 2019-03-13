@@ -11,7 +11,7 @@
 <ul>
 {{range .Docs -}}
 <li>
-<h3><a href="{{.Pathname}}">{{.Subject}}</a><br><small><time><script>document.write(toDateString({{.Ctime}} * 1000))</script></time></small></h3>
+<h3><a href="{{.Href}}">{{.Subject}}</a><br><small><time><script>document.write(toDateString({{.Ctime}} * 1000))</script></time></small></h3>
 <p>{{.Summary}}</p>
 </li>
 {{- end}}

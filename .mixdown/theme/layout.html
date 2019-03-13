@@ -8,7 +8,6 @@
 <meta name="author" content="Masatoshi Fukunaga">
 <meta name="keywords" content="">
 <meta name="description" content="">
-<base href="/blog/">
 <title>
 {{$subject := ""}}
 {{with .Subject}}
@@ -23,8 +22,9 @@
 {{$subject}} |
 {{end}}
 Perpetual Thought Cycle</title>
-<link rel="stylesheet" type="text/css" href="css/base.css">
-<link rel="stylesheet" type="text/css" href="css/layout.css">
+{{$baseURL := .BaseURL}}
+<link rel="stylesheet" type="text/css" href="{{$baseURL}}/css/base.css">
+<link rel="stylesheet" type="text/css" href="{{$baseURL}}/css/layout.css">
 <script>
 function toDateString(epoch){
     var date = (new Date(epoch)).toString().split(' ');
@@ -40,7 +40,7 @@ function toDateString(epoch){
 <!-- header:start -->
 <header>
 <div class="basewidth">
-<a href="." class="logo">
+<a href="{{$baseURL}}/" class="logo">
 <h1>Perpetual Thought Cycle</h1>
 <small>written by mah0x211</small>
 </a>
@@ -49,9 +49,9 @@ function toDateString(epoch){
 {{with .Hashtags}}
 <li><label for="tags-toggle">Tags</label></li>
 {{end}}
-<li><a href="archive/">Archive</a></li>
+<li><a href="{{$baseURL}}/archive/">Archive</a></li>
 {{with .Readme}}
-<li><a href="{{.Pathname}}">Me</a></li>
+<li><a href="{{.Href}}">Me</a></li>
 {{end}}
 </ul>
 </nav>
@@ -65,7 +65,7 @@ function toDateString(epoch){
 <div class="basewidth">
 <ul>
 {{range .}}
-<li><a href="t/{{escapePath .}}/">#{{.}}</a></li>
+<li><a href="{{$baseURL}}/t/{{escapePath .}}/">#{{.}}</a></li>
 {{end}}
 </ul>
 </div>
