@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Masatoshi Fukunaga">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<title>
+
+
+
+
+
+
+#静的サイトジェネレータ / 1 of 1 |
+
+Perpetual Thought Cycle</title>
+
+<link rel="stylesheet" type="text/css" href="/blog/css/base.css">
+<link rel="stylesheet" type="text/css" href="/blog/css/layout.css">
+<script>
+function toDateString(epoch){
+    var date = (new Date(epoch)).toString().split(' ');
+    date.shift();
+    date.pop();
+    return date.join(' ');
+}
+</script>
+</head>
+<body>
+
+<input type="checkbox" id="tags-toggle">
+<!-- header:start -->
+<header>
+<div class="basewidth">
+<a href="/blog/" class="logo">
+<h1>Perpetual Thought Cycle</h1>
+<small>written by mah0x211</small>
+</a>
+<nav>
+<ul>
+
+<li><label for="tags-toggle">Tags</label></li>
+
+<li><a href="/blog/archive/">Archive</a></li>
+
+</ul>
+</nav>
+</div>
+</header>
+<!-- header:end -->
+
+
+<!-- tags:start -->
+<section class="tags">
+<div class="basewidth">
+<ul>
+
+<li><a href="/blog/t/GitHub-Pages/">#GitHub-Pages</a></li>
+
+<li><a href="/blog/t/%E9%9D%99%E7%9A%84%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B8%E3%82%A7%E3%83%8D%E3%83%AC%E3%83%BC%E3%82%BF/">#静的サイトジェネレータ</a></li>
+
+</ul>
+</div>
+</section>
+<!-- tags:end -->
+
+
+
+<main>
+<div class="basewidth">
+
+<!-- archive:start -->
+<div class="archive">
+<h1>
+#静的サイトジェネレータ
+</h1>
+
+<ul>
+<li>
+<h3><a href="/blog/2019/start-making-blogging-tool-for-myself.html">自分用のブログツールを作り始めた</a><br><small><time><script>document.write(toDateString(1552495749 * 1000))</script></time></small></h3>
+<p>GitHub でブログを書き始めてみたものの、リポジトリにコミットするだけだと味気なさすぎて書く気分にならない。。。早くブログらしい体裁を作らないとブログを書く事そのものが早々に終了してしまいそうなので、週末の時間の空いた時間ゴソゴソと静的サイトジェネレータを作ってみた。 <a href="/blog/t/%E9%9D%99%E7%9A%84%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B8%E3%82%A7%E3%83%8D%E3%83%AC%E3%83%BC%E3%82%BF/">#静的サイトジェネレータ</a> <a href="/blog/t/GitHub-Pages/">#GitHub-Pages</a></p>
+</li>
+</ul>
+
+</div>
+<!-- archive:end-->
+
+
+<nav>
+<ul>
+<li class="newer"><span>新しい記事</span></li><li class="older"><span>古い記事</span></li>
+</ul>
+</nav>
+
+
+</div>
+</main>
+
+
+<footer>
+<div class="basewidth">
+<div class="whoami">
+<section class="profile">
+<h4><a href="https://github.com/mah0x211">Masatoshi Fukunaga</a></h4>
+<ul>
+<li>Freelance Developer since 2001.</li>
+<li>Tokyo, Japan</li>
+</ul>
+<p>2001年よりフリーランスのソフトウェア開発者として活動を開始、2008年末に帰国し大阪、2015年初頭より東京。</p>
+<p>最近の主な仕事は、技術顧問／アーキテクト／R&D／ミドルウェア開発／技術者育成／etc。</p>
+</section>
+<section class="gh-repos">
+<h4>Repositories <small class="total-stars"></small></h4>
+<ul><li>Now Loading...</li></ul>
+</section>
+<section class="gh-events">
+<h4>Activities</h4>
+<ul><li>Now Loading...</li></ul>
+</section>
+</div>
+<p class="copyright">
+Designed by Masatoshi Fukunaga<br>
+Copyright &copy; 2019 Masatoshi Fukunaga
+</p>
+</div>
+</footer>
+<script>
+function fetchJSON(url, callback, errCallback){
+    fetch('https://api.github.com' + url, {
+        method: "get",
+        headers: new Headers({'Accept': 'application/vnd.github.v3+json'})
+    }).then(function(res){
+        if(res.ok){
+            return res.json();
+        }
+        throw new Error('response was not ok - ' + res.statusText);
+    }).then(callback).catch(errCallback);
+}
+
+function toGitHubRepo(repoName, ref){
+    if(ref){
+        return [repoName, 'tree', ref].join('/');
+    }
+    return repoName;
+}
+function toGitHubURL(repoName, ref){
+    return ['https://github.com', toGitHubRepo(repoName, ref)].join('/');
+}
+
+function renderGitHubEvent(ul, ev)
+{
+    switch(ev.type){
+        case 'PushEvent':
+            if(ev.payload.commits){
+                var li = document.createElement('li'),
+                    a = document.createElement('a'),
+                    ncommit = ev.payload.commits.length;
+
+                a.href = toGitHubURL(ev.repo.name, ev.payload.ref);
+                a.innerText = toGitHubRepo(ev.repo.name);
+                li.innerText = [
+                    'Push', ncommit, 'commit' + ((ncommit > 1) ? 's' : ''),
+                ].join(' ') + ' to ';
+                li.appendChild(a);
+                ul.appendChild(li);
+                return ev.repo.name;
+            }
+            break;
+
+        case 'CreateEvent':
+            var li = document.createElement('li'),
+                a = document.createElement('a');
+
+            a.href = toGitHubURL(ev.repo.name, ev.payload.ref);
+            a.innerText = toGitHubRepo(ev.repo.name, ev.payload.ref);
+            li.innerText = 'Create ' + ev.payload.ref_type + ' ';
+            li.appendChild(a);
+            ul.appendChild(li);
+            return ev.repo.name;
+
+        case 'ForkEvent':
+            var li = document.createElement('li'),
+                src = document.createElement('a'),
+                dst = document.createElement('a');
+
+            src.href = toGitHubURL(ev.repo.name);
+            src.innerText = ev.repo.name;
+            dst.href = ev.payload.forkee.html_url;
+            dst.innerText = ev.payload.forkee.full_name;
+
+            li.innerText = 'Fork ';
+            li.appendChild(src);
+            li.innerHTML += ' to ';
+            li.appendChild(dst);
+            ul.appendChild(li);
+            return ev.repo.name;
+
+        case 'WatchEvent':
+            var li = document.createElement('li'),
+                a = document.createElement('a');
+
+            a.href = toGitHubURL(ev.repo.name);
+            a.innerText = ev.repo.name;
+            li.innerText = 'Star ★ ';
+            li.appendChild(a);
+            ul.appendChild(li);
+            return ev.repo.name;
+    }
+}
+
+function fetchGitHubEvents(){
+    var ul = document.querySelector('.gh-events ul'),
+        max = 10,
+        npage = 0,
+        repos = {},
+        err,
+        fetchNext = function(){
+            npage++;
+            fetchJSON(
+                '/users/mah0x211/events?page=' + npage,
+                function(arr){
+                    if(!Array.isArray(arr)){
+                        throw new Error(
+                            "failed to fetching array response - " + JSON.stringify(json)
+                        );
+                    }
+
+                    for(var i = 0, n = arr.length; i < n; i++){
+                        var ev = arr[i];
+                        if(ul.childNodes.length >= max){
+                            break;
+                        } else if(!repos[ev.repo.name]){
+                            var repoName = renderGitHubEvent(ul, ev);
+                            if(repoName){
+                                repos[repoName] = true;
+                            }
+                        }
+                    }
+
+                    if(npage < 10 && ul.childNodes.length < max){
+                        fetchNext();
+                    }
+                },
+                function(e){
+                    err = e;
+                    var ghe = document.querySelector('.gh-events'),
+                        p = document.createElement('p');
+
+                    p.innerHTML = 'Could not get the github activity.';
+                    ghe.innerText = '';
+                    ghe.appendChild(p);
+                    console.log(err);
+                }
+            );
+        };
+
+    ul.innerText = '';
+    fetchNext();
+}
+
+
+function renderGitHubRepos(repos){
+    var stars = 0,
+        list = [];
+
+    repos.forEach(function(repo){
+        stars += repo.stargazers_count;
+        if(repo.stargazers_count >= 3){
+            list.push(repo);
+        }
+    });
+    // set total-stars
+    document.querySelector('.gh-repos .total-stars').innerText = '★ ' + stars;
+
+
+    // list top N repos
+    var ul = document.querySelector('.gh-repos ul'),
+        max = 10;
+
+    ul.innerText = '';
+    list.sort(function(a, b){
+        return b.stargazers_count - a.stargazers_count
+    });
+    for(var i = 0, n = list.length; i < n && i < max; i++){
+        var repo = list[i],
+            li = document.createElement('li'),
+            a = document.createElement('a');
+
+        a.href = repo.html_url;
+        a.innerText = repo.name;
+        li.innerText = '★ ' + repo.stargazers_count + ' ';
+        li.appendChild(a);
+        li.innerHTML += ' / ' + repo.description;
+        ul.appendChild(li);
+    }
+}
+
+
+function fetchGitHubRepos(){
+    fetchJSON(
+        '/users/mah0x211',
+        function(json){
+            if(!json.public_repos){
+                throw new Error(
+                    'failed to fetching user info - ' + JSON.stringify(json)
+                );
+            }
+
+            var pages = Math.ceil(json.public_repos / 100),
+                i = pages,
+                npage = 0,
+                repos = [];
+
+            while(i--){
+                fetchJSON(
+                    '/users/mah0x211/repos?per_page=100&type=owner&page=' + (i + 1),
+                    function(json){
+                        repos = repos.concat(json);
+                        npage++;
+                        if(npage >= pages){
+                            renderGitHubRepos(repos);
+                        }
+                    }
+                );
+            }
+        },
+        function(err){
+            var ghr = document.querySelector('.gh-repos'),
+                p = document.createElement('p');
+
+            p.innerHTML = 'Could not get the github repositories.';
+            ghr.innerText = '';
+            ghr.appendChild(p);
+            console.log("error: ", err.message);
+        }
+    );
+}
+fetchGitHubEvents();
+fetchGitHubRepos();
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-136068942-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-136068942-1');
+</script>
+</body>
+</html>

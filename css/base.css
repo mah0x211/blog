@@ -1,0 +1,217 @@
+/*
+ * Copyright (C) 2019 Masatoshi Fukunaga
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * Created by Masatoshi Fukunaga on 19/01/09
+ */
+
+@charset "UTF-8";
+
+/* reset styles for HTML 5.1 W3C Working Draft 04 Feb 2014 */
+/* sections */
+body,article,section,nav,aside,h1,h2,h3,h4,h5,h6,header,footer,address,
+/* groups */
+p,hr,pre,blockquote,ol,ul,li,dl,dt,dd,figure,figcaption,div,main,
+/* text */
+a,em,strong,small,s,cite,q,dfn,abbr,data,time,code,var,samp,kbd,sub,sup,i,b,u,
+mark,ruby,rb,rt,rtc,rp,bdi,bdo,span,br,wbr,
+/* edit */
+del,ins,
+/* embedded */
+img,iframe,embed,object,param,video,audio,source,track,canvas,map,area,
+/* table */
+table,caption,colgroup,col,tbody,thead,tfoot,tr,td,th,
+/* form */
+form,fieldset,legend,label,input,button,select,datalist,optgroup,option,
+textarea,keygen,output,progress,meter,
+/* interaction */
+details,summary,menu,menuitem,dialog {
+    border: 0;
+    outline: 0;
+    background: transparent;
+}
+/* block elements */
+body,article,section,nav,aside,h1,h2,h3,h4,h5,h6,header,footer,address,p,hr,pre,
+blockquote,ol,ul,dl,dt,dd,figure,figcaption,div,main,form,fieldset {
+    display: block;
+}
+
+/* reset margin and padding */
+html * {
+    margin: 0;
+    padding: 0;
+    border-collapse: collapse;
+    box-sizing: border-box;
+}
+
+table {
+    display: inline-block;
+    margin: 1em 0;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 1ex;
+    vertical-align: top;
+    border: 1px #ddd solid;
+}
+tr:nth-child(even) td {
+    background-color: #f3f3f3;
+}
+thead th {
+    text-align: center;
+    background-color: #ffe;
+}
+
+img {
+    border: none;
+}
+
+small {
+    font-size: 90%;
+}
+
+label {
+    cursor: pointer;
+}
+
+
+/* base styles */
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    padding: 0;
+    color: #333;
+    font-family: HelveticaNeue, Helvetica, 'Hiragino Kaku Gothic Pro', Meiryo, sans-serif;
+    font-size: 1em;
+    text-align: center;
+    background-color: rgb(241,241,236);
+}
+
+h1 {
+    font-size: 240%;
+}
+h2 {
+    font-size: 160%;
+}
+h3 {
+    font-size: 140%;
+    line-height: 140%;
+}
+h4 {
+    font-size: 120%;
+}
+h5 {
+    font-size: 100%;
+}
+
+p {
+    overflow-wrap: break-word;
+}
+p,
+pre {
+	margin-bottom: 1em;
+}
+
+pre {
+    padding: 1em;
+    overflow: auto;
+}
+code {
+    display: inline;
+    padding: 2px 5px;
+    font-size: 110%;
+}
+pre, code {
+    background-color: #fafaf8;
+    border: 1px #e9e9e9 solid;
+    border-radius: 4px;
+}
+pre code {
+    padding: 0;
+    font-size: 100%;
+    white-space: pre;
+    border: none;
+}
+
+a {
+	color: #2262a1;
+	text-decoration: none;
+	cursor: pointer;
+}
+label,
+a,
+a * {
+    transition-property: all;
+    transition-duration: .2s;
+    transition-timing-function: ease-out;
+}
+a:hover {
+	color: #0072f1;
+}
+a img {
+	border: none;
+}
+
+i {
+	color: #666;
+	font-weight: normal;
+	font-size: 85%;
+}
+
+
+ul, ol {
+	margin: 0 1em;
+	padding: 0 1em;
+}
+ul ul,
+ol ol {
+    padding: 0;
+}
+li {
+    list-style-position: inside;
+}
+
+blockquote {
+    padding-left: 1.2em;
+    color: #888;
+    border-left: 5px #ddd solid;
+}
+blockquote a {
+    color: #69d;
+}
+
+time {
+    white-space: nowrap;
+}
+
+hr {
+	clear: both;
+    height: 6px;
+    background-color: #f0f0f0;
+    border: 1px #e0e0e0 solid;
+    border-radius: 3px;
+}
+

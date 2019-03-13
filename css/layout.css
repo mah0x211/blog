@@ -1,0 +1,435 @@
+/*
+ * Copyright (C) 2019 Masatoshi Fukunaga
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * Created by Masatoshi Fukunaga on 19/01/09
+ */
+
+@charset "UTF-8";
+
+.basewidth {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1024px;
+}
+
+/*
+    unsupported warning
+*/
+noscript,
+.unsupported {
+    display: block;
+    padding: 1ex;
+    font-size: 85%;
+    background-color: #ff6;
+}
+noscript *,
+.unsupported * {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* header */
+header {
+    font-weight: bold;
+    text-shadow: -1px -1px 0 #222;
+    background-color: rgb(51,51,51);
+}
+
+header > div {
+    display: flex;
+}
+
+header .logo {
+    display: inline-block;
+    margin-right: auto;
+    padding: 1ex 1.5em;
+    background-color: #222;
+}
+header a {
+    color: rgba(255,255,255,.7);
+}
+header .logo h1 {
+	font-size: 100%;
+}
+header .logo small {
+    color: #666;
+}
+
+header ul,
+header li {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+header ul {
+    display: table;
+}
+header li {
+    display: table-cell;
+}
+
+header nav a,
+header nav label {
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    padding: 0 1em;
+    font-size: 95%;
+    color: rgba(255,255,255,.7);
+}
+
+header li a:before,
+header li label:before {
+    display: inline-block;
+    content: '';
+    height: 100%;
+    vertical-align: middle;
+}
+
+header a:hover,
+header label:hover {
+    background-color: rgba(200,10,50,.3);
+}
+header a:hover,
+header a:hover *,
+header label:hover,
+header label:hover * {
+    color: #fff;
+}
+header a.selected,
+header label.selected {
+    color: #fff;
+    background-color: rgba(0,0,0,.3);
+}
+
+
+/* .me h2:before {
+    display: block;
+    float: left;
+    content: '';
+    height: 96px;
+    width: 96px;
+    margin-right: 1em;
+    text-shadow: -1px -1px 0 #222;
+    background-image: url(http://www.gravatar.com/avatar/40b580f68bc2cf5dae216eceabd4db74?s=96);
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 2px #fff solid;
+    border-radius: 96px;
+    box-shadow: inset 0 0 5px #444;
+} */
+
+/* footer */
+footer {
+	padding: 1em 0 0;
+    color: #555;
+    text-align: left;
+    border: 0 #d9d9d9 solid;
+    border-top-width: 4px;
+}
+
+footer a {
+    font-weight: bold;
+    color: #000;
+}
+
+footer .whoami {
+    display: flex;
+}
+footer .whoami > section {
+    padding: 0 1em;
+    flex: 0 1 calc(100%/3);
+}
+
+footer .profile ul {
+    margin: 1ex 0 1em;
+    padding: 0;
+}
+footer .profile li {
+    list-style-position: outside;
+    margin-left: 1.3em;
+    padding: 2px 0;
+}
+footer .profile p {
+    font-size: 95%;
+}
+
+footer .gh-repos ul,
+footer .gh-events ul {
+    margin: 1ex 0;
+    padding: 0;
+    font-size: 90%;
+}
+footer .gh-repos li,
+footer .gh-events li {
+    list-style: none;
+    padding: 1.5ex 0;
+    line-height: 140%;
+    border-top: 1px dashed gray;
+}
+
+footer .copyright {
+    padding: 1em;
+    font-size: 90%;
+    line-height: 140%;
+    border-top: 1px #ccc solid;
+}
+
+/* tags */
+.tags {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    /* background-color: #fff; */
+    border-bottom: 0 transparent solid;
+    transition-property: max-height,opacity,border-bottom;
+    transition-duration: .5s;
+    transition-timing-function: ease-out;
+}
+.tags ul {
+    margin: 0;
+    padding: 1ex 1em;
+}
+.tags ul li {
+    display: inline-block;
+    line-height: 240%;
+}
+.tags ul li a{
+    display: inline-block;
+    padding: 5px 1ex;
+    color: #003;
+    font-size: .9em;
+    font-weight: bold;
+    line-height: 100%;
+    background-color: #e3e3e3;
+    border-radius: 4px;
+    border: 1px #fff solid;
+}
+.tags ul li a:hover{
+    color: #fff;
+    background-color: rgba(0,50,100,.8);
+}
+#tags-toggle {
+    display: none;
+}
+#tags-toggle:checked ~ .tags {
+    opacity: 1;
+    max-height: 40em;
+    border-bottom: 4px #e0e0e0 solid;
+}
+#tags-toggle:checked + header label[for="tags-toggle"] {
+    color: #fff;
+    background-color: rgba(200,10,50,.3);
+}
+
+/* main */
+main {
+    background-color: #fff;
+}
+
+main nav {
+    padding: 2em 0;
+    font-size: 95%;
+    font-weight: bold;
+}
+main nav li {
+    display: inline-block;
+}
+main nav li > * {
+    display: inline-block;
+    padding: 1ex 1em;
+    vertical-align: bottom;
+    border: 1px #eee solid;
+    border-radius: 3px;
+}
+main nav .newer > * {
+    border-radius: 3px 0 0 3px;
+}
+main nav .older > * {
+    border-left: none;
+    border-radius: 0 3px 3px 0;
+}
+main nav span {
+    color: #aaa;
+}
+main nav a:hover {
+    background-color: #ff9;
+}
+
+
+
+/* article */
+article {
+    padding: 1em;
+    font-family: HelveticaNeue, Helvetica, 'Hiragino Kaku Gothic Pro', Meiryo, sans-serif;
+    text-align: left;
+}
+
+article h1 small {
+    display: inline-block;
+    padding: 3px 1ex;
+}
+article h1 small:first-child {
+	color: #fff;
+    font-size: small;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background-color: #096;
+    border-radius: 3px;
+}
+article h1 small:last-child {
+    color: #666;
+    font-size: medium;
+    font-weight: normal;
+    vertical-align: top;
+    border-bottom: 1px #ddd solid;
+}
+
+article h1, article h2, article h3 {
+    margin-bottom: 1em;
+}
+article h2, article h3 {
+    margin-top: 1.4em;
+}
+
+article p,
+article pre,
+article ul,
+article ol,
+article table,
+article blockquote,
+article figure {
+    line-height: 160%;
+}
+
+
+/* latest */
+article.latest h1 {
+    text-align: center;
+}
+article.latest h1 small:first-child {
+    background-color: #b30;
+}
+
+
+/* archive */
+.archive {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+.archive h1 {
+    padding: 1em 1ex;
+}
+.archive h1 small {
+    display: inline-block;
+    padding: 3px 1ex;
+	color: #fff;
+    font-size: small;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background-color: #096;
+    border-radius: 3px;
+}
+.archive h1 sup {
+    display: inline-block;
+    padding: 3px 1ex;
+	color: #fff;
+    font-size: small;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background-color: #d6d;
+    border-radius: 3px;
+}
+
+.archive ul,
+.archive li {
+    margin: 0;
+    padding: 0;
+}
+.archive ul {
+    border-top: 1px #ccc solid;
+}
+.archive li {
+    display: inline-block;
+    padding: 1em;
+    width: 25%;
+    height: 100%;
+    vertical-align: top;
+}
+.archive h3 small {
+    display: block;
+    color: #666;
+    font-size: small;
+    font-weight: normal;
+}
+
+
+@media screen and (max-width: 1920px){
+    .archive li {
+        width: 25%;
+    }
+}
+@media screen and (max-width: 1440px){
+    .archive li {
+        width: 33%;
+    }
+}
+@media screen and (max-width: 1024px){
+    .archive li {
+        width: 50%;
+    }
+}
+@media screen and (max-width: 768px){
+    .archive li {
+        width: 100%;
+    }
+    header > div,
+    header .logo {
+        display: block;
+    }
+    header nav {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+    header ul {
+        margin: 0 auto;
+        white-space: nowrap;
+    }
+    header li {
+        display: inline-block;
+    }
+    header nav a,
+    header nav label {
+        padding:  1em;
+    }
+
+    footer .whoami {
+        display: block;
+    }
+    footer .profile {
+        margin-bottom: 1.5em;
+    }
+}
