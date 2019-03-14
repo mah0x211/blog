@@ -323,6 +323,10 @@ article figure {
     line-height: 160%;
 }
 
+article ul,
+article ol {
+    margin: 1em 0;
+}
 
 /* latest */
 article.latest h1 {
