@@ -328,6 +328,10 @@ article ol {
     margin: 1em 0;
 }
 
+article img {
+    max-width: 100%;
+}
+
 /* latest */
 article.latest h1 {
     text-align: center;
