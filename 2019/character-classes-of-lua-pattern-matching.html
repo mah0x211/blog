@@ -15,7 +15,7 @@
 
 
 
-#GitHub-Pages / 1 of 1 |
+Lua のパターンマッチングの文字クラスは何を表しているのか |
 
 Perpetual Thought Cycle</title>
 
@@ -75,26 +75,91 @@ function toDateString(epoch){
 <main>
 <div class="basewidth">
 
-<!-- archive:start -->
-<div class="archive">
-<h1>
-#GitHub-Pages
-</h1>
+<article>
+<h1><small><time><script>document.write(toDateString(1552985887 * 1000));</script></time></small><br />Lua のパターンマッチングの文字クラスは何を表しているのか</h1>
+
+<p><strong>NOTE：</strong> Qiita に書いていたものをこちらへ移動。</p>
+
+<p>Lua のパターンマッチングの文字クラスが具体的に何を指してるのか、マニュアルに記載されてないおかげか、はたまた、脳に Stop-The-World を起こさせるジメジメした暑さのおかげかなのか、調べては忘れ調べてはまた忘れなんて事を毎度毎度繰り返してるので、いい加減まとめておこうと思ったのでメモ。</p>
+
+<blockquote>
+<p><a href="https://www.lua.org/manual/5.1/manual.html#5.4.1">Lua 5.1 Reference Manual - 5.4.1 Patterns</a></p>
 
 <ul>
-<li>
-<h3><a href="/blog/2019/start-making-blogging-tool-for-myself.html">自分用のブログツールを作り始めた</a><br><small><time><script>document.write(toDateString(1552525798 * 1000))</script></time></small></h3>
-<p>GitHub でブログを書き始めてみたものの、リポジトリにコミットするだけだと味気なさすぎて書く気分にならない。。。早くブログらしい体裁を作らないとブログを書く事そのものが早々に終了してしまいそうなので、週末の時間の空いた時間ゴソゴソと静的サイトジェネレータを作ってみた。 <a href="/blog/t/%E9%9D%99%E7%9A%84%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B8%E3%82%A7%E3%83%8D%E3%83%AC%E3%83%BC%E3%82%BF/">#静的サイトジェネレータ</a> <a href="/blog/t/GitHub-Pages/">#GitHub-Pages</a></p>
-</li>
+<li>%a: represents all letters.</li>
+<li>%c: represents all control characters.</li>
+<li>%d: represents all digits.</li>
+<li>%l: represents all lowercase letters.</li>
+<li>%p: represents all punctuation characters.</li>
+<li>%s: represents all space characters.</li>
+<li>%u: represents all uppercase letters.</li>
+<li>%w: represents all alphanumeric characters.</li>
+<li>%x: represents all hexadecimal digits.</li>
+</ul>
+</blockquote>
+
+<p>マニュアルに書いてない事はググるよりソースにあたる方が良いので、ソースあさると <a href="https://github.com/lua/lua/blob/98194db4295726069137d13b8d24fca8cbf892b6/lstrlib.c#L225">lstrlib.c</a> にそれっぽい箇所を発見。</p>
+
+<pre><code class="language-c:lstrlib.c">static int match_class (int c, int cl) {
+  int res;
+  switch (tolower(cl)) {
+    case 'a' : res = isalpha(c); break;
+    case 'c' : res = iscntrl(c); break;
+    case 'd' : res = isdigit(c); break;
+    case 'l' : res = islower(c); break;
+    case 'p' : res = ispunct(c); break;
+    case 's' : res = isspace(c); break;
+    case 'u' : res = isupper(c); break;
+    case 'w' : res = isalnum(c); break;
+    case 'x' : res = isxdigit(c); break;
+    case 'z' : res = (c == 0); break;
+    default: return (cl == c);
+  }
+  return (islower(cl) ? res : !res);
+}
+</code></pre>
+
+<p>コード内に明確に記載されているように標準Cライブラリ関数で実装されているので、具体的に指しているものは以下の文字集合になる；</p>
+
+<ul>
+<li><code>%a</code>: <code>man isalpha</code> -&gt; <em>A-Za-z</em></li>
+<li><code>%c</code>: <code>man iscntrl</code> -&gt; <em>0x00-0x1F</em></li>
+<li><code>%d</code>: <code>man isdigit</code> -&gt; <em>0-9</em></li>
+<li><code>%l</code>: <code>man islower</code> -&gt; <em>a-z</em></li>
+<li><code>%p</code>: <code>man ispunct</code> -&gt; <em>!&ldquo;#$%&amp;&lsquo;()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</em></li>
+<li><code>%s</code>: <code>man isspace</code> -&gt; <em>\t\n\v\f\r</em> and <em>0x20:whitespace</em></li>
+<li><code>%u</code>: <code>man isupper</code> -&gt; <em>A-Z</em></li>
+<li><code>%w</code>: <code>man isalnum</code> -&gt; <em>A-Za-z0-9</em></li>
+<li><code>%x</code>: <code>man isxdigit</code> -&gt; <em>0-9A-Fa-f</em></li>
 </ul>
 
-</div>
-<!-- archive:end-->
+<p>ついでに、Lua 5.2 と 5.3 系を見ると文字クラス <code>%g</code> が追加されている。</p>
+
+<blockquote>
+<p><a href="https://www.lua.org/manual/5.2/manual.html#6.4.1">Lua 5.2 Reference Manual - 6.4.1 – Patterns</a></p>
+
+<p>&mdash;snip&mdash;
+- %g: represents all printable characters except space.</p>
+</blockquote>
+
+<p>こちらも同様に調べて見ると <a href="https://github.com/lua/lua/blob/78d986590060b615334ac214b6cc5b7d951b1d58/lstrlib.c#L260"><code>case 'g' : res = isgraph(c); break;</code></a> てな感じで標準ライブラリ関数で実装されているので、具体的に指しているものは以下の文字集合になる。</p>
+
+<ul>
+<li><code>%g</code>: <code>man isgraph</code> -&gt; <em>0-9a-zA-Z</em> and <em>!&rdquo;#$%&amp;&rsquo;()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</em></li>
+</ul>
+
+<hr />
+
+<p>２年くらい前から「調べてメモっとこ。」なんて思いつつもコードから離れると瞬間的に忘れてく鳥頭なのでなかなか書けなかったのだけれど、Kobito の試用ついでに書いてみた。</p>
+
+<p>やっぱりこう、メモ的な Tips をサクッと書いてアップできるツールってのは便利。でも、プレビュー画面が書いてる箇所にスクロールしてくれないので、エディタとしては VSCode の方が楽かなぁ。</p>
+
+</article>
 
 
 <nav>
 <ul>
-<li class="newer"><span>新しい記事</span></li><li class="older"><span>古い記事</span></li>
+<li class="newer"><span>新しい記事</span></li><li class="older"><a href="/blog/2019/start-making-blogging-tool-for-myself.html">古い記事</a></li>
 </ul>
 </nav>
 
