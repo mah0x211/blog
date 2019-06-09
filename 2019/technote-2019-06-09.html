@@ -21,7 +21,9 @@
 
 
 
-Archive 1 of 1 |
+
+
+Technote-2019-06-09 |
 
 Perpetual Thought Cycle</title>
 
@@ -101,41 +103,71 @@ function toDateString(epoch){
 <main>
 <div class="basewidth">
 
-<!-- archive:start -->
-<div class="archive">
-<h1><small><time><script>
-document.write(toDateString(1560084879 * 1000));
-</script></time> - <time><script>
-document.write(toDateString(1551718097 * 1000));
-</script></time></small><br>Archive</h1>
+<article>
+<h1><small><time><script>document.write(toDateString(1560084879 * 1000));</script></time></small><br />Technote-2019-06-09</h1>
+
+<p>ここ何年かは Twitter の DM やメッセンジャー、Slack や LINE が連絡ツールの役割を十二分に果たしてくれているおかげで、なかなか消化できないメールマガジンが溜まり続けてしまっている。そこで、スキマ時間が出来た時に読む程度では消化出来ないので、週一程度の頻度で気になった記事をピックアップして備忘録的にまとめておこうと思う。</p>
+
+<hr />
+
+<h2>ケーススタディ</h2>
 
 <ul>
-<li>
-<h3><a href="/blog/2019/technote-2019-06-09.html">Technote-2019-06-09</a><br><small><time><script>document.write(toDateString(1560084879 * 1000))</script></time></small></h3>
-<p>ここ何年かは Twitter の DM やメッセンジャーや Slack が連絡ツールの役割を十二分に果たしてくれているおかげで、なかなか消化できないメールマガジンが溜まり続けてしまっている。そこで、スキマ時間が出来た時に読む程度では消化出来ないので、週一程度の頻度で気になった記事をピックアップして備忘録的にまとめておこうと思う。
-<a href="/blog/t/technote/">#technote</a> <a href="/blog/t/go/">#go</a> <a href="/blog/t/quic/">#quic</a> <a href="/blog/t/dropbox/">#dropbox</a> <a href="/blog/t/nginx/">#nginx</a> <a href="/blog/t/linux/">#linux</a> <a href="/blog/t/distributed-computing/">#distributed-computing</a> <a href="/blog/t/ebtree/">#ebtree</a> <a href="/blog/t/command-line-references/">#command-line-references</a></p>
-</li><li>
-<h3><a href="/blog/2019/README.html">About Me</a><br><small><time><script>document.write(toDateString(1560013314 * 1000))</script></time></small></h3>
-<p>フリーランスになって結構長く経つけど振り返る事もなくやってきたので、少しだけ振り返りながら今後の事も含めても記録しておこうと思う。</p>
-</li><li>
-<h3><a href="/blog/2019/character-classes-of-lua-pattern-matching.html">Lua のパターンマッチングの文字クラスは何を表しているのか</a><br><small><time><script>document.write(toDateString(1559910526 * 1000))</script></time></small></h3>
-<p>Lua のパターンマッチングの文字クラスが具体的に何を指してるのか、マニュアルに記載されてないおかげか、はたまた、脳に Stop-The-World を起こさせるジメジメした暑さのおかげかなのか、調べては忘れ調べてはまた忘れなんて事を毎度毎度繰り返してるので、いい加減まとめておこうと思ったのでメモ。 <a href="/blog/t/lua/">#lua</a></p>
-</li><li>
-<h3><a href="/blog/2019/start-making-blogging-tool-for-myself.html">自分用のブログツールを作り始めた</a><br><small><time><script>document.write(toDateString(1552525798 * 1000))</script></time></small></h3>
-<p>GitHub でブログを書き始めてみたものの、リポジトリにコミットするだけだと味気なさすぎて書く気分にならない。。。早くブログらしい体裁を作らないとブログを書く事そのものが早々に終了してしまいそうなので、週末の時間の空いた時間ゴソゴソと静的サイトジェネレータを作ってみた。 <a href="/blog/t/%E9%9D%99%E7%9A%84%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B8%E3%82%A7%E3%83%8D%E3%83%AC%E3%83%BC%E3%82%BF/">#静的サイトジェネレータ</a> <a href="/blog/t/GitHub-Pages/">#GitHub-Pages</a></p>
-</li><li>
-<h3><a href="/blog/2019/started-a-blogging-on-github.html">GitHub でブログを始める</a><br><small><time><script>document.write(toDateString(1551718097 * 1000))</script></time></small></h3>
-<p>ひさしぶりにブログでも書いてみようと思い立ったのだけれど、それでは早速書いてみるかという程にブログを書き始めるのは今も昔も相も変わらず簡単ではない事に気づかされる。</p>
-</li>
+<li>Stream &amp; Go: News Feeds for Over 300 Million End Users<br />
+<a href="https://hackernoon.com/stream-go-news-feeds-for-over-300-million-end-users-b227614cf32f">https://hackernoon.com/stream-go-news-feeds-for-over-300-million-end-users-b227614cf32f</a><br />
+ニュースフィードとチャット API を提供するサービス Stream のテクノロジースタックの紹介。LightFM がちょっと気になる。</li>
 </ul>
 
-</div>
-<!-- archive:end-->
+<h2>パフォーマンス最適化</h2>
+
+<ul>
+<li><p>Employing QUIC Protocol to Optimize Uber’s App Performance<br />
+<a href="https://eng.uber.com/employing-quic-protocol/">https://eng.uber.com/employing-quic-protocol/</a><br />
+頻繁に途切れるようなワイヤレスネットワークの上に構築されるサービスだと、HTTP/2 は上手く機能しないので RUDP のようなプロトコルが向いてるってのはなんか納得。</p></li>
+
+<li><p>Optimizing web servers for high throughput and low latency
+<a href="https://blogs.dropbox.com/tech/2017/09/optimizing-web-servers-for-high-throughput-and-low-latency/">https://blogs.dropbox.com/tech/2017/09/optimizing-web-servers-for-high-throughput-and-low-latency/</a><br />
+Dropbox はユーザーに負担させる事なく利益の最大化をするためにオンプレに移行するような会社だから、こうゆう徹底した最適化もすごく重要担っているだろうな。</p></li>
+
+<li><p>Nginx Admin&rsquo;s Handbook<br />
+<a href="https://github.com/trimstray/nginx-admins-handbook">https://github.com/trimstray/nginx-admins-handbook</a><br />
+Nginx 触るならコレ読んでおいて！と言えるくらいの充実っぷり！ありがたや。</p></li>
+
+<li><p>Learn where some of the network sysctl variables fit into the Linux/Kernel network flow<br />
+<a href="https://github.com/leandromoreira/linux-network-performance-parameters">https://github.com/leandromoreira/linux-network-performance-parameters</a><br />
+最近のカーネルはデフォルトで良くチューニングされたパラメータに設定されているから、きちんと理解せずに設定を変えると逆にパフォーマンスが落ちるからよとの事。</p></li>
+</ul>
+
+<h2>分散システム</h2>
+
+<ul>
+<li>An Overview of Distributed Systems and the Consensus Problem<br />
+<a href="https://probablyexactlywrong.com/distsys">https://probablyexactlywrong.com/distsys</a><br />
+分散システムの作り方を聞かれたらとりあえずコレをオススメしようと思うくらい概要が良くまとまっている。</li>
+</ul>
+
+<h2>リファレンス</h2>
+
+<ul>
+<li>The Art of Command Line<br />
+<a href="https://github.com/jlevy/the-art-of-command-line">https://github.com/jlevy/the-art-of-command-line</a><br />
+日常的に使わないコマンドはすぐに忘れてしまうのですごく助かる。</li>
+</ul>
+
+<h2>アルゴリズムとデータ構造</h2>
+
+<ul>
+<li>Elastic Binary Trees - ebtree<br />
+<a href="http://wtarreau.blogspot.com/2011/12/elastic-binary-trees-ebtree.html">http://wtarreau.blogspot.com/2011/12/elastic-binary-trees-ebtree.html</a><br />
+コルーチンの実行制御の管理を最小ヒープで実装していたので比較してみたい。</li>
+</ul>
+
+</article>
 
 
 <nav>
 <ul>
-<li class="newer"><span>新しい記事</span></li><li class="older"><span>古い記事</span></li>
+<li class="newer"><span>新しい記事</span></li><li class="older"><a href="/blog/2019/README.html">古い記事</a></li>
 </ul>
 </nav>
 
