@@ -15,9 +15,9 @@ jobs:
         steps:
             - checkout
             # specify any bash command here prefixed with `run: `
-            - run: wget https://github.com/mah0x211/mixdown/releases/download/master/mixdown-linux.tar.gz
+            - run: wget https://github.com/mah0x211/mixdown/releases/download/release-master/mixdown-linux.tar.gz
             - run: tar -zxvf ./mixdown-linux.tar.gz
-            - run: ./mixdown -outdir /tmp/mixdown-docs
+            - run: ./mixdown -outdir /tmp/mixdown-docs -sitemap https://mah0x211.github.io
             - run: git config --global user.email "$GIT_AUTHOR_EMAIL"
             - run: git config --global user.name "$GIT_AUTHOR_NAME"
             - run: git checkout gh-pages 2>/dev/null || git checkout -b gh-pages
