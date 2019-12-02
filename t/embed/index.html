@@ -23,7 +23,7 @@
 
 
 
-ブログツールの仕様を変更 |
+#embed / 1 of 1 |
 
 Perpetual Thought Cycle</title>
 
@@ -107,25 +107,26 @@ function toDateString(epoch){
 <main>
 <div class="basewidth">
 
-<article>
-<h1><small><time><script>document.write(toDateString(1571410137 * 1000));</script></time></small><br />ブログツールの仕様を変更</h1>
+<!-- archive:start -->
+<div class="archive">
+<h1>
+#embed
+</h1>
 
-<p>コミットメッセージをブログのタイトルとサマリーに利用するという仕様はそのままに、コンテンツも考慮した仕様に変更。</p>
+<ul>
+<li>
+<h3><a href="/blog/2019/how-to-embed-static-files-in-go-binary.html">Go バイナリに静的ファイルを埋め込む方法</a><br><small><time><script>document.write(toDateString(1575307208 * 1000))</script></time></small></h3>
+<p>夏頃から仕事で所謂 CI ツール——CircleCI とか Travis CI の様なコミット時に自動実行する様なツール——の PoC 開発をやっているのだけれど、フロントエンドの静的ファイルをどうしたものか考えていたら良い感じのモジュールを見つけたのでメモ。</p>
+</li>
+</ul>
 
-<p>GitHub をブログを書くためのインターフェイスとして利用しようという発想から生まれた仕様だったのだけれど、実際にいくつか書いてみると GitHub で自動生成されるコミットメッセージをそのままコミットしてミスってしまう事があってこの仕様のままでは扱いづらいことが分かった。</p>
-
-<p>そこで、コンテンツの最初に現れた要素が <code>見出し要素＝h1</code> であればその内容をタイトルとして利用し、最初に現れる <code>段落要素＝p</code> の内容をサマリーとして利用する仕様に変更した。これでコミットメッセージをミスると記事のタイトルとサマリーが崩壊してしまう事が避けられる。</p>
-
-<p>まぁでも「コミットログに記事のタイトルが並ぶと見やすくて良いよなぁ」なんて思いつきベースの仕様だったのだけれど、今でもこれは良いと思うんだけどね。GitHub のウェブインターフェイスが自動的に <code>Update ...</code> みたいなコミットメッセージを生成するんじゃなくて、以前のコミットメッセージをそのまま利用してくれる仕様であれば何も問題なかったのだけれど、それだとコードの管理がやりづらいから仕方ない。</p>
-
-<p>そんなわけで早速この記事を GitHub 上で書いてみてるけど、やっぱりいちいちエディタを起動して〜なんてフローがないので楽で良い。ブログ再開したのに全然更新してなかったけどこれでまた少しやる気が出た気がする。</p>
-
-</article>
+</div>
+<!-- archive:end-->
 
 
 <nav>
 <ul>
-<li class="newer"><a href="/blog/2019/how-to-embed-static-files-in-go-binary.html">新しい記事</a></li><li class="older"><a href="/blog/2019/technote-2019-06-09.html">古い記事</a></li>
+<li class="newer"><span>新しい記事</span></li><li class="older"><span>古い記事</span></li>
 </ul>
 </nav>
 

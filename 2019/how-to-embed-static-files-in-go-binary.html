@@ -23,7 +23,7 @@
 
 
 
-ブログツールの仕様を変更 |
+Go バイナリに静的ファイルを埋め込む方法 |
 
 Perpetual Thought Cycle</title>
 
@@ -108,24 +108,125 @@ function toDateString(epoch){
 <div class="basewidth">
 
 <article>
-<h1><small><time><script>document.write(toDateString(1571410137 * 1000));</script></time></small><br />ブログツールの仕様を変更</h1>
+<h1><small><time><script>document.write(toDateString(1575307208 * 1000));</script></time></small><br />Go バイナリに静的ファイルを埋め込む方法</h1>
 
-<p>コミットメッセージをブログのタイトルとサマリーに利用するという仕様はそのままに、コンテンツも考慮した仕様に変更。</p>
+<p>夏頃から仕事で所謂 CI ツール——CircleCI とか Travis CI の様なコミット時に自動実行する様なツール——の PoC 開発をやっているのだけれど、フロントエンドの静的ファイルをどうしたものか考えていたら良い感じのモジュールを見つけたのでメモ。</p>
 
-<p>GitHub をブログを書くためのインターフェイスとして利用しようという発想から生まれた仕様だったのだけれど、実際にいくつか書いてみると GitHub で自動生成されるコミットメッセージをそのままコミットしてミスってしまう事があってこの仕様のままでは扱いづらいことが分かった。</p>
+<p>背景としては、折角 Go で作ってるのだから静的ファイルも実行バイナリに埋め込めるとデプロイがすごく楽になっていいよなぁ、なんてありふれた思いつきから端を発している。</p>
 
-<p>そこで、コンテンツの最初に現れた要素が <code>見出し要素＝h1</code> であればその内容をタイトルとして利用し、最初に現れる <code>段落要素＝p</code> の内容をサマリーとして利用する仕様に変更した。これでコミットメッセージをミスると記事のタイトルとサマリーが崩壊してしまう事が避けられる。</p>
+<p>そこで GitHub 探してみると結構色々とあったのだけれど、最終的にはぱっと見でコードもドキュメントもとてもシンプルでわかりやすく、外部依存モジュールもない <code>statik</code> を利用することにした。</p>
 
-<p>まぁでも「コミットログに記事のタイトルが並ぶと見やすくて良いよなぁ」なんて思いつきベースの仕様だったのだけれど、今でもこれは良いと思うんだけどね。GitHub のウェブインターフェイスが自動的に <code>Update ...</code> みたいなコミットメッセージを生成するんじゃなくて、以前のコミットメッセージをそのまま利用してくれる仕様であれば何も問題なかったのだけれど、それだとコードの管理がやりづらいから仕方ない。</p>
+<blockquote>
+<h3><a href="https://github.com/rakyll/statik">rakyll/statik</a></h3>
 
-<p>そんなわけで早速この記事を GitHub 上で書いてみてるけど、やっぱりいちいちエディタを起動して〜なんてフローがないので楽で良い。ブログ再開したのに全然更新してなかったけどこれでまた少しやる気が出た気がする。</p>
+<p>statik allows you to embed a directory of static files into your Go binary to be later served from an http.FileSystem.</p>
+
+<p>Is this a crazy idea? No, not necessarily. If you&rsquo;re building a tool that has a Web component, you typically want to serve some images, CSS and JavaScript. You like the comfort of distributing a single binary, so you don&rsquo;t want to mess with deploying them elsewhere. If your static files are not large in size and will be browsed by a few people, statik is a solution you are looking for.</p>
+</blockquote>
+
+<p>使い方はドキュメントに書いてある通りで、<code>go get github.com/rakyll/statik</code> でコマンドをインストールして、<code>statik</code> コマンドで静的ファイルの配置されたディレクトリを指定する事で Go のコード＝パッケージが生成され、そのパッケージをインポートする事で実行バイナリに埋め込まれる様になる。</p>
+
+<p>サクッと使えたら良いのだけれど、実際のプロジェクトに適用するには以下の三つの課題をクリアする必要がある；</p>
+
+<ul>
+<li>「継続的な開発」がやりづらいと困るので、コマンドライン引数で埋め込んだ静的ファイルを使うか、指定されたディレクトリを使うかを選択可能である。</li>
+<li>利用している URL ルータ—ちなみに <a href="https://github.com/julienschmidt/httprouter">httprouter</a> を利用している———で利用可能である。</li>
+<li>静的ファイルにはテンプレートファイルも含まれているが、テンプレートファイルは静的配信を行ってはいけない。</li>
+</ul>
+
+<p>そこで、以下の様にラッパーレイヤーを設けて使う事にした。</p>
+
+<pre><code class="language-go">package assets
+
+import (
+	&quot;io/ioutil&quot;
+	&quot;net/http&quot;
+	&quot;log&quot;
+	&quot;os&quot;
+	&quot;path/filepath&quot;
+	&quot;syscall&quot;
+
+	_ &quot;./statik&quot; // register embedded data to statik/fs on init func
+
+	&quot;github.com/rakyll/statik/fs&quot;
+)
+
+var gRootDir string
+var gStatikFS http.FileSystem
+
+func init() {
+	var err error
+	if gStatikFS, err = fs.New(); err != nil {
+		log.Fatalf(&quot;failed to fs.New():&quot;, err)
+	}
+}
+
+type ProxyFS string
+
+func (p ProxyFS) Open(filename string) (http.File, error) {
+	return gStatikFS.Open(string(p) + &quot;/&quot; + filepath.Clean(filename))
+}
+
+func FileSystem(dirname string) http.FileSystem {
+	if gRootDir == &quot;&quot; {
+		return ProxyFS(filepath.Join(&quot;/&quot;, dirname))
+	}
+	return http.Dir(filepath.Join(gRootDir, filepath.Clean(dirname)))
+}
+
+func SetRootDir(dirname string) error {
+	if gRootDir != &quot;&quot; {
+		log.Fatal(&quot;root directory already exists&quot;)
+	}
+
+	var err error
+	dirname, err = Realpath(dirname)
+	if err != nil {
+		return err
+	} else if info, err := os.Lstat(dirname); err != nil {
+		return err
+	} else if !info.IsDir() {
+		return syscall.ENOTDIR
+	}
+	gRootDir = dirname
+
+	return nil
+}
+
+func ReadFile(filename string) ([]byte, error) {
+	filename = filepath.Clean(filename)
+	if gRootDir != &quot;&quot; {
+		return ioutil.ReadFile(gRootDir + &quot;/&quot; + filename)
+	} else if f, err := gStatikFS.Open(&quot;/&quot; + filename); err != nil {
+		return nil, err
+	} else {
+		defer f.Close()
+		return ioutil.ReadAll(f)
+	}
+}
+</code></pre>
+
+<p><code>assets.SetRootDir(dirname string)</code> で、開発時には OS のファイルシステムを利用する様に切り替える。また、<code>httprouter</code> を利用しているので静的ファイル配信は <code>static</code> ディレクトリの配下に配置して以下の様に <code>assets.FileSystem</code> の戻り値を登録する。</p>
+
+<pre><code class="language-go">route := httprouter.New()
+route.ServeFiles(&quot;/static/*filepath&quot;, assets.FileSystem(&quot;/static&quot;))
+</code></pre>
+
+<p>テンプレートファイルを読み込むときは <code>assets.ReadFile</code> で読み込む。</p>
+
+<pre><code class="language-go">buf, err := assets.ReadFile(pathname)
+</code></pre>
+
+<p>実際のコードとはちょっと違うけど大体こんな感じで実装できた。</p>
+
+<p>まだ試してないけど、サーバレスのコードを実装する時も同じ要領でテンプレートファイルを埋め込めば楽かもしれない。</p>
 
 </article>
 
 
 <nav>
 <ul>
-<li class="newer"><a href="/blog/2019/how-to-embed-static-files-in-go-binary.html">新しい記事</a></li><li class="older"><a href="/blog/2019/technote-2019-06-09.html">古い記事</a></li>
+<li class="newer"><span>新しい記事</span></li><li class="older"><a href="/blog/2019/change-the-spec-of-mixdown.html">古い記事</a></li>
 </ul>
 </nav>
 
