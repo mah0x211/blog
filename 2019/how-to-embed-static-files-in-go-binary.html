@@ -108,9 +108,9 @@ function toDateString(epoch){
 <div class="basewidth">
 
 <article>
-<h1><small><time><script>document.write(toDateString(1575307208 * 1000));</script></time></small><br />Go バイナリに静的ファイルを埋め込む方法</h1>
+<h1><small><time><script>document.write(toDateString(1575308426 * 1000));</script></time></small><br />Go バイナリに静的ファイルを埋め込む方法</h1>
 
-<p>夏頃から仕事で所謂 CI ツール——CircleCI とか Travis CI の様なコミット時に自動実行する様なツール——の PoC 開発をやっているのだけれど、フロントエンドの静的ファイルをどうしたものか考えていたら良い感じのモジュールを見つけたのでメモ。</p>
+<p>夏頃から仕事で所謂 CI ツール––CircleCI とか Travis CI の様なコミット時に自動実行する様なツール––の PoC 開発をやっているのだけれど、フロントエンドの静的ファイルをどうしたものか考えていたら良い感じのモジュールを見つけたのでメモ。</p>
 
 <p>背景としては、折角 Go で作ってるのだから静的ファイルも実行バイナリに埋め込めるとデプロイがすごく楽になっていいよなぁ、なんてありふれた思いつきから端を発している。</p>
 
@@ -130,7 +130,7 @@ function toDateString(epoch){
 
 <ul>
 <li>「継続的な開発」がやりづらいと困るので、コマンドライン引数で埋め込んだ静的ファイルを使うか、指定されたディレクトリを使うかを選択可能である。</li>
-<li>利用している URL ルータ—ちなみに <a href="https://github.com/julienschmidt/httprouter">httprouter</a> を利用している———で利用可能である。</li>
+<li>利用している URL ルータ––ちなみに <a href="https://github.com/julienschmidt/httprouter">httprouter</a> を利用している––で利用可能である。</li>
 <li>静的ファイルにはテンプレートファイルも含まれているが、テンプレートファイルは静的配信を行ってはいけない。</li>
 </ul>
 
