@@ -6,9 +6,8 @@
 {{with index .Docs 0}}
 <!-- latest:start -->
 <article class="latest">
-<h1><small>Latest / <time><script>document.write(toDateString({{.Ctime}} * 1000));</script></time></small><br>{{.Subject}}</h1>
-<p>{{.Summary}}<br>
-<a href="{{.Href}}">続きを読む</a></p>
+<h1><a href="{{.Href}}"><small>Latest / <time><script>document.write(toDateString({{.Ctime}} * 1000));</script></time></small><br>{{.Subject}}</a></h1>
+<p>{{.Summary}}</p>
 </article>
 <!-- latest:end -->
 {{end}}
