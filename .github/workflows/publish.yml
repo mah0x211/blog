@@ -1,0 +1,36 @@
+name: Publish GitHub Pages
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Publish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USER_NAME: Masatoshi Fukunaga
+        GITHUB_USER_EMAIL: mah0x211@users.noreply.github.com
+      run: |
+        git config --global user.name "${GITHUB_USER_NAME}"
+        git config --global user.email "${GITHUB_USER_EMAIL}"
+        git remote set-url --push origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+
+        wget https://github.com/mah0x211/mixdown/releases/download/v0.1.0/mixdown
+        chmod 755 ./mixdown
+        ./mixdown -outdir /tmp/mixdown-docs
+
+        git checkout gh-pages 2>/dev/null || git checkout -b gh-pages
+        mkdir /tmp/trash && mv ./* /tmp/trash/
+        git ls-files | xargs git rm -f --ignore-unmatch
+        mv /tmp/mixdown-docs/* .
+
+        git add . && git status
+        git diff-index --quiet HEAD || git commit -m "Build at $(date -R)"
+        git push origin HEAD
