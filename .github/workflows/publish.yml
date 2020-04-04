@@ -11,8 +11,24 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
-    - name: Publish
+    - name: Download mixdown
+      run: |
+        wget https://github.com/mah0x211/mixdown/releases/download/v0.1.0/mixdown
+        chmod 755 ./mixdown
+
+    - name: Build blog pages
+      run: ./mixdown -outdir /tmp/mixdown-docs
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        ref: gh-pages
+
+    - name: Setup configuration
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_USER_NAME: Masatoshi Fukunaga
@@ -22,15 +38,19 @@ jobs:
         git config --global user.email "${GITHUB_USER_EMAIL}"
         git remote set-url --push origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
 
-        wget https://github.com/mah0x211/mixdown/releases/download/v0.1.0/mixdown
-        chmod 755 ./mixdown
-        ./mixdown -outdir /tmp/mixdown-docs
-
-        git checkout gh-pages 2>/dev/null || git checkout -b gh-pages
-        mkdir /tmp/trash && mv ./* /tmp/trash/
+    - name: Remove old contents
+      run: |
+        mkdir /tmp/trash
+        mv ./* /tmp/trash/
         git ls-files | xargs git rm -f --ignore-unmatch
-        mv /tmp/mixdown-docs/* .
 
-        git add . && git status
+    - name: Commit new contents
+      run: |
+        mv /tmp/mixdown-docs/* .
+        git add .
+        git status
+        git diff --cached
         git diff-index --quiet HEAD || git commit -m "Build at $(date -R)"
-        git push origin HEAD
+
+    - name: Publish blog pages
+      run: git push origin HEAD
