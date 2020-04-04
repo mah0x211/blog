@@ -1,4 +1,5 @@
 {
     "baseURL": "/blog",
-    "extname": "html"
+    "extname": "html",
+    "sitemap": "https://mah0x211.github.io"
 }
