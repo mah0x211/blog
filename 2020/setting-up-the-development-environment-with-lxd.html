@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-136068942-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-136068942-1');
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Masatoshi Fukunaga">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<title>
+
+
+
+
+
+
+LXD による開発環境のセットアップ |
+
+Perpetual Thought Cycle</title>
+
+<link rel="stylesheet" type="text/css" href="/blog/css/base.css">
+<link rel="stylesheet" type="text/css" href="/blog/css/layout.css">
+<script>
+function toDateString(epoch){
+    var date = (new Date(epoch)).toString().split(' ');
+    date.shift();
+    date.pop();
+    return date.join(' ');
+}
+</script>
+</head>
+<body>
+
+<input type="checkbox" id="tags-toggle">
+<!-- header:start -->
+<header>
+<div class="basewidth">
+<a href="/blog/" class="logo">
+<h1>Perpetual Thought Cycle</h1>
+<small>written by mah0x211</small>
+</a>
+<nav>
+<ul>
+
+<li><label for="tags-toggle">Tags</label></li>
+
+<li><a href="/blog/archive/">Archive</a></li>
+
+<li><a href="/blog/README.html">Me</a></li>
+
+</ul>
+</nav>
+</div>
+</header>
+<!-- header:end -->
+
+
+<!-- tags:start -->
+<section class="tags">
+<div class="basewidth">
+<ul>
+
+<li><a href="/blog/t/GitHub-Pages/">#GitHub-Pages</a></li>
+
+<li><a href="/blog/t/command-line-references/">#command-line-references</a></li>
+
+<li><a href="/blog/t/distributed-computing/">#distributed-computing</a></li>
+
+<li><a href="/blog/t/dropbox/">#dropbox</a></li>
+
+<li><a href="/blog/t/ebtree/">#ebtree</a></li>
+
+<li><a href="/blog/t/embed/">#embed</a></li>
+
+<li><a href="/blog/t/go/">#go</a></li>
+
+<li><a href="/blog/t/linux/">#linux</a></li>
+
+<li><a href="/blog/t/lua/">#lua</a></li>
+
+<li><a href="/blog/t/lxd/">#lxd</a></li>
+
+<li><a href="/blog/t/nginx/">#nginx</a></li>
+
+<li><a href="/blog/t/quic/">#quic</a></li>
+
+<li><a href="/blog/t/static/">#static</a></li>
+
+<li><a href="/blog/t/technote/">#technote</a></li>
+
+<li><a href="/blog/t/vm/">#vm</a></li>
+
+<li><a href="/blog/t/%E3%82%BF%E3%83%90%E3%82%B3/">#タバコ</a></li>
+
+<li><a href="/blog/t/%E4%BB%AE%E6%83%B3%E3%83%9E%E3%82%B7%E3%83%B3/">#仮想マシン</a></li>
+
+<li><a href="/blog/t/%E7%A6%81%E7%85%99/">#禁煙</a></li>
+
+<li><a href="/blog/t/%E9%9D%99%E7%9A%84%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B8%E3%82%A7%E3%83%8D%E3%83%AC%E3%83%BC%E3%82%BF/">#静的サイトジェネレータ</a></li>
+
+</ul>
+</div>
+</section>
+<!-- tags:end -->
+
+
+
+<main>
+<div class="basewidth">
+
+<article>
+<h1><small><time><script>document.write(toDateString(1587724077 * 1000));</script></time></small><br />LXD による開発環境のセットアップ</h1>
+
+<p>１年近く前に開発用にと思って自作サーバを組んで見たのだけれど、なんやかんやてんやわんやで絶賛放置中だったんだけど、コロナの影響もあったおかげでセットアップする時間が取れる様になったので、LXD で開発環境をセットアップしてみる事した。</p>
+
+<p>１年近く放置中だっただけあってログインパスワードを忘れてるし、何をインストールしたのかも忘れてしまった。まぁ、普通忘れるよね。</p>
+
+<p>とりあえず <code>Ubuntu 18.04 LTS Server</code> をインストールする事から開始したんだけど、外付け HDD に書き込んでる間に <code>20.04 LTS</code> がリリースされてるのに気づいた。不運だ。しょうがないので <code>18.04</code> をインストール後にアップグレードしたので環境は <code>20.04</code> になった。</p>
+
+<pre><code class="language-shell">$ cat /etc/lsb-release 
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=20.04
+DISTRIB_CODENAME=focal
+DISTRIB_DESCRIPTION=&quot;Ubuntu 20.04 LTS&quot;
+</code></pre>
+
+<p>LXD は既に入ってたのだけれど、<code>lxd --version</code> を実行すると <code>usbid: failed to load: &quot;/usr/share/misc/usb.ids&quot; no such file or directory</code> なんてがエラー出るので確認してみると、存在してる読み込めるしナニコレ状態だったので、あらためて公式ドキュメントに従ってインストールと初期化を行う。</p>
+
+<ul>
+<li>Linux Containers - LXD - はじめに - コマンドライン<br />
+<a href="https://linuxcontainers.org/ja/lxd/getting-started-cli/">https://linuxcontainers.org/ja/lxd/getting-started-cli/</a></li>
+</ul>
+
+<p>そんなこんなで LXD をインストールすることができた。</p>
+
+<pre><code class="language-shell">$ lxd --version
+4.0.1
+</code></pre>
+
+<h2>仮想マシン用のプロファイルを設定する</h2>
+
+<p>初期化後はデフォルトのプロファイル <code>default</code> が作成されているはずなので確認してみる。</p>
+
+<pre><code class="language-shell">$ lxc profile show default
+config: {}
+description: Default LXD profile
+devices:
+  eth0:
+    name: eth0
+    network: lxdbr0
+    type: nic
+  root:
+    path: /
+    pool: default
+    type: disk
+name: default
+used_by: []
+</code></pre>
+
+<p>それから仮想マシン用のプロファイル <code>vm</code> を作成する。</p>
+
+<pre><code class="language-shell">$ lxc profile create vm
+</code></pre>
+
+<p>そうすると以下の様なテンプレートが作成される。</p>
+
+<pre><code class="language-yml">### This is a YAML representation of the profile.
+### Any line starting with a '# will be ignored.
+###
+### A profile consists of a set of configuration items followed by a set of
+### devices.
+###
+### An example would look like:
+### name: onenic
+### config:
+###   raw.lxc: lxc.aa_profile=unconfined
+### devices:
+###   eth0:
+###     nictype: bridged
+###     parent: lxdbr0
+###     type: nic
+###
+### Note that the name is shown but cannot be changed
+
+config: {}
+description: &quot;&quot;
+devices: {}
+name: vm
+used_by: []
+</code></pre>
+
+<p>プロファイルの設定項目について詳しくは以下の公式ドキュメントを参照。</p>
+
+<ul>
+<li>Instance configuration - LXD - system container manager<br />
+<a href="https://lxd.readthedocs.io/en/latest/instances/">https://lxd.readthedocs.io/en/latest/instances/</a></li>
+</ul>
+
+<p>空っぽのプロファイルを以下の様に書き換えて <code>cloud-init</code> での初期化に対応させる。</p>
+
+<pre><code class="language-shell">$ lxc profile edit vm
+</code></pre>
+
+<pre><code class="language-yml">### This is a YAML representation of the profile.
+### Any line starting with a '# will be ignored.
+###
+### A profile consists of a set of configuration items followed by a set of
+### devices.
+###
+### An example would look like:
+### name: onenic
+### config:
+###   raw.lxc: lxc.aa_profile=unconfined
+### devices:
+###   eth0:
+###     nictype: bridged
+###     parent: lxdbr0
+###     type: nic
+###
+### Note that the name is shown but cannot be changed
+
+config:
+  user.user-data: |
+    #cloud-config
+    disable_root: true
+    ssh_pwauth: yes
+    users:
+      - name: ubuntu
+        groups: lxd
+        shell: /bin/bash
+        passwd: &quot;$6$rP7tNg6vq.AK7U9p$3zaRN3PriMB6p/fv4cDnNGvWaqqNhO9wJkoQzA/9IHd8fwFERPriV5f9tDSZB/gckNQhkBEee2CQJjH2J.ac91&quot;
+        lock_passwd: false
+        sudo: ALL=(ALL) ALL
+description: LXD profile for virtual machines
+devices:
+  config:
+    type: disk
+    source: cloud-init:config
+name: vm
+used_by: []
+</code></pre>
+
+<p><code>root</code> ユーザーでは触りたくないので <code>disable_root</code> で禁止にし、公開鍵認証だと秘密鍵をうっかり無くしてしまったらログイン出来なくなるので <code>ssh_pwauth</code> でパスワード認証を有効にしている。そうさ、私はうっかりさんなのだ。</p>
+
+<p>それから、パスワードログイン可能なユーザー <code>ubuntu</code> を作成して、<code>sudo</code> コマンドを実行可能にする。パスワードは以下の様に <code>openssl passwd -6</code> で <code>SHA512</code> でハッシュ化されたパスワードを設定する。</p>
+
+<pre><code class="language-shell">$ openssl passwd -6 &lt;password&gt;
+</code></pre>
+
+<p><code>cloud-init</code> ついて詳しくは公式ドキュメントを参照。</p>
+
+<ul>
+<li>Modules &amp;mdash; cloud-init 20.1 documentation<br />
+<a href="https://cloudinit.readthedocs.io/en/latest/topics/modules.html">https://cloudinit.readthedocs.io/en/latest/topics/modules.html</a></li>
+</ul>
+
+<h2>仮想マシンを作成する</h2>
+
+<p>実際に <code>ubuntu 18.04</code> の仮想マシンを作成してみようと思う。</p>
+
+<p>仮想マシンの作成自体はコマンド一発で作成できてしまうのだけれど、それだけを記載しても備忘録のために記事にしている意味が無いので、簡単な仕組みだけでも調べて記載しておく事にする。</p>
+
+<p>そもそも「元のイメージはどこからやってくるのさ？」なんて疑問が浮かんだのだけれど、それは以下のコマンドで確認できた。</p>
+
+<pre><code class="language-shell">$ lxc remote list
++-----------------+------------------------------------------+---------------+-------------+--------+--------+
+|      NAME       |                   URL                    |   PROTOCOL    |  AUTH TYPE  | PUBLIC | STATIC |
++-----------------+------------------------------------------+---------------+-------------+--------+--------+
+| images          | https://images.linuxcontainers.org       | simplestreams | none        | YES    | NO     |
++-----------------+------------------------------------------+---------------+-------------+--------+--------+
+| local (default) | unix://                                  | lxd           | file access | NO     | YES    |
++-----------------+------------------------------------------+---------------+-------------+--------+--------+
+| ubuntu          | https://cloud-images.ubuntu.com/releases | simplestreams | none        | YES    | YES    |
++-----------------+------------------------------------------+---------------+-------------+--------+--------+
+| ubuntu-daily    | https://cloud-images.ubuntu.com/daily    | simplestreams | none        | YES    | YES    |
++-----------------+------------------------------------------+---------------+-------------+--------+--------+
+</code></pre>
+
+<p>この中の <code>https://cloud-images.ubuntu.com/releases</code> からイメージを取得する事にして、使用したいイメージ <code>18.04</code> が存在するのかを以下のコマンドで確認する。</p>
+
+<pre><code class="language-shell">$ lxc image list ubuntu: '18.04'
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+|                ALIAS                | FINGERPRINT  | PUBLIC |              DESCRIPTION               | ARCHITECTURE |      TYPE       |   SIZE   |          UPLOAD DATE          |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04 (7 more)               | 15d8ea2efae1 | yes    | Ubuntu bionic amd64 (20200423_07:42)   | x86_64       | CONTAINER       | 94.46MB  | Apr 23, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04 (7 more)               | 8909f04f8b60 | yes    | Ubuntu bionic amd64 (20200423_07:42)   | x86_64       | VIRTUAL-MACHINE | 220.38MB | Apr 23, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/arm64 (3 more)         | 4dcff94827e1 | yes    | Ubuntu bionic arm64 (20200423_07:42)   | aarch64      | VIRTUAL-MACHINE | 215.06MB | Apr 23, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/arm64 (3 more)         | febff738fc4d | yes    | Ubuntu bionic arm64 (20200423_07:42)   | aarch64      | CONTAINER       | 87.35MB  | Apr 23, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/armhf (3 more)         | 16fc34bbe5d6 | yes    | Ubuntu bionic armhf (20200423_07:42)   | armv7l       | CONTAINER       | 87.52MB  | Apr 23, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/cloud (3 more)         | 6a1ee0ffefc0 | yes    | Ubuntu bionic amd64 (20200424_02:00)   | x86_64       | CONTAINER       | 105.25MB | Apr 24, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/cloud (3 more)         | 545af47c5fef | yes    | Ubuntu bionic amd64 (20200424_02:00)   | x86_64       | VIRTUAL-MACHINE | 237.31MB | Apr 24, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/cloud/arm64 (1 more)   | bcb07da59dc2 | yes    | Ubuntu bionic arm64 (20200421_07:42)   | aarch64      | VIRTUAL-MACHINE | 231.81MB | Apr 21, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/cloud/arm64 (1 more)   | c812bf93037c | yes    | Ubuntu bionic arm64 (20200421_07:42)   | aarch64      | CONTAINER       | 97.54MB  | Apr 21, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/cloud/armhf (1 more)   | 4d9868d7b6b5 | yes    | Ubuntu bionic armhf (20200423_07:42)   | armv7l       | CONTAINER       | 97.53MB  | Apr 23, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/cloud/i386 (1 more)    | b1b163d2499c | yes    | Ubuntu bionic i386 (20200424_02:00)    | i686         | CONTAINER       | 106.10MB | Apr 24, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/cloud/ppc64el (1 more) | 702643b30fb8 | yes    | Ubuntu bionic ppc64el (20200423_07:42) | ppc64le      | CONTAINER       | 107.92MB | Apr 23, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/cloud/s390x (1 more)   | 1a3cc8410fcb | yes    | Ubuntu bionic s390x (20200423_07:42)   | s390x        | CONTAINER       | 81.22MB  | Apr 23, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/i386 (3 more)          | 370a34ab6bf2 | yes    | Ubuntu bionic i386 (20200424_02:00)    | i686         | CONTAINER       | 95.38MB  | Apr 24, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/ppc64el (3 more)       | a62eaa2eee42 | yes    | Ubuntu bionic ppc64el (20200423_07:42) | ppc64le      | CONTAINER       | 96.66MB  | Apr 23, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+| ubuntu/18.04/s390x (3 more)         | 77dda0247401 | yes    | Ubuntu bionic s390x (20200423_07:42)   | s390x        | CONTAINER       | 71.03MB  | Apr 23, 2020 at 12:00am (UTC) |
++-------------------------------------+--------------+--------+----------------------------------------+--------------+-----------------+----------+-------------------------------+
+</code></pre>
+
+<p><code>NAME</code> が <code>ubuntu/18.04</code> で <code>TYPE</code> が <code>VIRTUAL-MACHINE</code> のイメージがリストアップされているのが確認できたので、以下のコマンドで実際に仮想マシン <code>hello-vm</code> を作成してみる。</p>
+
+<pre><code class="language-shell">$ lxc launch ubuntu:18.04 hello-vm --vm --profile default --profile vm
+Creating hello-vm
+Starting hello-vm
+</code></pre>
+
+<p><code>--vm</code> フラグを渡す事で仮想マシンを作成をする。そして、<code>default</code> プロファイルに従ってネットワーク周りの設定を行い、<code>vm</code> プロファイルに従って <code>cloud-init</code> による初期化を行っている。多分。</p>
+
+<p>しばらくすると終わるので確認してみる。</p>
+
+<pre><code class="language-shell">$ lxc list
++----------+---------+---------------------+-----------------------------------------------+-----------------+-----------+
+|   NAME   |  STATE  |        IPV4         |                     IPV6                      |      TYPE       | SNAPSHOTS |
++----------+---------+---------------------+-----------------------------------------------+-----------------+-----------+
+| hello-vm | RUNNING | 10.74.152.51 (eth0) | fd42:d488:1c1e:a215:216:3eff:fe26:54c4 (eth0) | VIRTUAL-MACHINE | 0         |
++----------+---------+---------------------+-----------------------------------------------+-----------------+-----------+
+</code></pre>
+
+<p>動いている様なので <code>ssh</code> でログインしてみる。</p>
+
+<pre><code class="language-shell">$ ssh ubuntu@10.74.152.51
+The authenticity of host '10.74.152.51 (10.74.152.51)' can't be established.
+ECDSA key fingerprint is SHA256:iOTgUrphpoA3DQ/QMDX9C2LXXjwLAWoWqvxGCSFKPQs.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '10.74.152.51' (ECDSA) to the list of known hosts.
+ubuntu@10.74.152.51's password: 
+Welcome to Ubuntu 18.04.4 LTS (GNU/Linux 4.15.0-96-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Fri Apr 24 08:41:18 UTC 2020
+
+  System load:  0.0               Processes:             100
+  Usage of /:   11.0% of 8.86GB   Users logged in:       0
+  Memory usage: 12%               IP address for enp5s0: 10.74.152.51
+  Swap usage:   0%
+
+
+0 packages can be updated.
+0 updates are security updates.
+
+
+Last login: Fri Apr 24 08:34:23 2020
+ubuntu@hello-vm:~$
+</code></pre>
+
+<p>無事確認できた！　やった！　終わった！　なんか疲れた！</p>
+
+<p>そう。あっさり出来た様に見えるけれど、実際には公式ドキュメントを漁ったり色んなサイトを参照して丸二日くらいかかってしまったよ。きっとコンテナ全盛だからなのだろうけど、なかなかコレといった情報にたどり着かなくて結構疲れた。。。</p>
+
+<p>あとはネットワーク周りを調整したら終わりかな。<br />
+あー、、終わってなかった。。</p>
+
+</article>
+
+
+<nav>
+<ul>
+<li class="newer"><span>新しい記事</span></li><li class="older"><a href="/blog/2020/how-to-quit-smoking.html">古い記事</a></li>
+</ul>
+</nav>
+
+
+</div>
+</main>
+
+
+<footer>
+<div class="basewidth">
+<div class="whoami">
+<section class="profile">
+<h4><a href="https://github.com/mah0x211">Masatoshi Fukunaga</a></h4>
+<ul>
+<li>Freelance Developer since 2001.</li>
+<li>Tokyo, Japan</li>
+</ul>
+<p>2001年よりフリーランスのソフトウェア開発者として活動を開始、2008年末に帰国し大阪、2015年初頭より東京。</p>
+<p>最近の主な仕事は、技術顧問／アーキテクト／R&D／ミドルウェア開発／技術者育成／etc。</p>
+</section>
+<section class="gh-repos">
+<h4>Repositories <small class="total-stars"></small></h4>
+<ul><li>Now Loading...</li></ul>
+</section>
+<section class="gh-events">
+<h4>Activities</h4>
+<ul><li>Now Loading...</li></ul>
+</section>
+</div>
+<p class="copyright">
+Designed by Masatoshi Fukunaga<br>
+Copyright &copy; 2019 Masatoshi Fukunaga
+</p>
+</div>
+</footer>
+<script>
+function fetchJSON(url, callback, errCallback){
+    fetch('https://api.github.com' + url, {
+        method: "get",
+        headers: new Headers({'Accept': 'application/vnd.github.v3+json'})
+    }).then(function(res){
+        if(res.ok){
+            return res.json();
+        }
+        throw new Error('response was not ok - ' + res.statusText);
+    }).then(callback).catch(errCallback);
+}
+
+function toGitHubRepo(repoName, ref){
+    if(ref){
+        return [repoName, 'tree', ref].join('/');
+    }
+    return repoName;
+}
+function toGitHubURL(repoName, ref){
+    return ['https://github.com', toGitHubRepo(repoName, ref)].join('/');
+}
+
+function renderGitHubEvent(ul, ev)
+{
+    switch(ev.type){
+        case 'PushEvent':
+            if(ev.payload.commits){
+                var li = document.createElement('li'),
+                    a = document.createElement('a'),
+                    ncommit = ev.payload.commits.length;
+
+                a.href = toGitHubURL(ev.repo.name, ev.payload.ref);
+                a.innerText = toGitHubRepo(ev.repo.name);
+                li.innerText = [
+                    'Push', ncommit, 'commit' + ((ncommit > 1) ? 's' : ''),
+                ].join(' ') + ' to ';
+                li.appendChild(a);
+                ul.appendChild(li);
+                return ev.repo.name;
+            }
+            break;
+
+        case 'CreateEvent':
+            var li = document.createElement('li'),
+                a = document.createElement('a');
+
+            a.href = toGitHubURL(ev.repo.name, ev.payload.ref);
+            a.innerText = toGitHubRepo(ev.repo.name, ev.payload.ref);
+            li.innerText = 'Create ' + ev.payload.ref_type + ' ';
+            li.appendChild(a);
+            ul.appendChild(li);
+            return ev.repo.name;
+
+        case 'ForkEvent':
+            var li = document.createElement('li'),
+                src = document.createElement('a'),
+                dst = document.createElement('a');
+
+            src.href = toGitHubURL(ev.repo.name);
+            src.innerText = ev.repo.name;
+            dst.href = ev.payload.forkee.html_url;
+            dst.innerText = ev.payload.forkee.full_name;
+
+            li.innerText = 'Fork ';
+            li.appendChild(src);
+            li.innerHTML += ' to ';
+            li.appendChild(dst);
+            ul.appendChild(li);
+            return ev.repo.name;
+
+        case 'WatchEvent':
+            var li = document.createElement('li'),
+                a = document.createElement('a');
+
+            a.href = toGitHubURL(ev.repo.name);
+            a.innerText = ev.repo.name;
+            li.innerText = 'Star ★ ';
+            li.appendChild(a);
+            ul.appendChild(li);
+            return ev.repo.name;
+    }
+}
+
+function fetchGitHubEvents(){
+    var ul = document.querySelector('.gh-events ul'),
+        max = 10,
+        npage = 0,
+        repos = {},
+        err,
+        fetchNext = function(){
+            npage++;
+            fetchJSON(
+                '/users/mah0x211/events?page=' + npage,
+                function(arr){
+                    if(!Array.isArray(arr)){
+                        throw new Error(
+                            "failed to fetching array response - " + JSON.stringify(json)
+                        );
+                    }
+
+                    for(var i = 0, n = arr.length; i < n; i++){
+                        var ev = arr[i];
+                        if(ul.childNodes.length >= max){
+                            break;
+                        } else if(!repos[ev.repo.name]){
+                            var repoName = renderGitHubEvent(ul, ev);
+                            if(repoName){
+                                repos[repoName] = true;
+                            }
+                        }
+                    }
+
+                    if(npage < 10 && ul.childNodes.length < max){
+                        fetchNext();
+                    }
+                },
+                function(e){
+                    err = e;
+                    var ghe = document.querySelector('.gh-events'),
+                        p = document.createElement('p');
+
+                    p.innerHTML = 'Could not get the github activity.';
+                    ghe.innerText = '';
+                    ghe.appendChild(p);
+                    console.log(err);
+                }
+            );
+        };
+
+    ul.innerText = '';
+    fetchNext();
+}
+
+
+function renderGitHubRepos(repos){
+    var stars = 0,
+        list = [];
+
+    repos.forEach(function(repo){
+        stars += repo.stargazers_count;
+        if(repo.stargazers_count >= 3){
+            list.push(repo);
+        }
+    });
+    // set total-stars
+    document.querySelector('.gh-repos .total-stars').innerText = '★ ' + stars;
+
+
+    // list top N repos
+    var ul = document.querySelector('.gh-repos ul'),
+        max = 10;
+
+    ul.innerText = '';
+    list.sort(function(a, b){
+        return b.stargazers_count - a.stargazers_count
+    });
+    for(var i = 0, n = list.length; i < n && i < max; i++){
+        var repo = list[i],
+            li = document.createElement('li'),
+            a = document.createElement('a');
+
+        a.href = repo.html_url;
+        a.innerText = repo.name;
+        li.innerText = '★ ' + repo.stargazers_count + ' ';
+        li.appendChild(a);
+        li.innerHTML += ' / ' + repo.description;
+        ul.appendChild(li);
+    }
+}
+
+
+function fetchGitHubRepos(){
+    fetchJSON(
+        '/users/mah0x211',
+        function(json){
+            if(!json.public_repos){
+                throw new Error(
+                    'failed to fetching user info - ' + JSON.stringify(json)
+                );
+            }
+
+            var pages = Math.ceil(json.public_repos / 100),
+                i = pages,
+                npage = 0,
+                repos = [];
+
+            while(i--){
+                fetchJSON(
+                    '/users/mah0x211/repos?per_page=100&type=owner&page=' + (i + 1),
+                    function(json){
+                        repos = repos.concat(json);
+                        npage++;
+                        if(npage >= pages){
+                            renderGitHubRepos(repos);
+                        }
+                    }
+                );
+            }
+        },
+        function(err){
+            var ghr = document.querySelector('.gh-repos'),
+                p = document.createElement('p');
+
+            p.innerHTML = 'Could not get the github repositories.';
+            ghr.innerText = '';
+            ghr.appendChild(p);
+            console.log("error: ", err.message);
+        }
+    );
+}
+fetchGitHubEvents();
+fetchGitHubRepos();
+</script>
+</body>
+</html>
